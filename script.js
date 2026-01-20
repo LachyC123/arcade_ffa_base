@@ -74,16 +74,33 @@ canvas.addEventListener("touchend",()=>touch=null);
 
 /* ===== SAFE SPAWN ===== */
 function getSafeSpawn(){
-  let x,y,ok;
-  do{
-    ok=true;
-    x=Math.random()*canvas.width;
-    y=Math.random()*canvas.height;
-    players.forEach(p=>{
-      if(!p.dead && Math.hypot(p.x-x,p.y-y)<200) ok=false;
+  let x, y, ok;
+  let attempts = 0;
+
+  do {
+    ok = true;
+    x = Math.random() * canvas.width;
+    y = Math.random() * canvas.height;
+
+    players.forEach(p => {
+      if (p.x === undefined || p.y === undefined) return;
+      if (!p.dead && Math.hypot(p.x - x, p.y - y) < 200) {
+        ok = false;
+      }
     });
-  }while(!ok);
-  return {x,y};
+
+    attempts++;
+    if (attempts > 50) break; // safety escape
+  } while (!ok);
+
+  return { x, y };
+}
+
+    attempts++;
+    if (attempts > 50) break; // safety escape
+  } while (!ok);
+
+  return { x, y };
 }
 
 function shoot(p,tx,ty){
